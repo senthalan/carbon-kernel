@@ -17,6 +17,9 @@
 */
 package org.wso2.carbon.bootstrap;
 
+import org.wso2.config.mapper.ConfigParser;
+import org.wso2.config.mapper.ConfigParserException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,6 +49,8 @@ public class Bootstrap {
     protected static final String ROOT = System.getProperty(CARBON_HOME, ".");
     private static final String CARBON_PROPERTIES = "carbon.properties";
     private static final String CONF_DIRECTORY_PATH = "carbon.config.dir.path";
+    public static final String CARBON_NEW_CONFIG_DIR_PATH = "carbon.new.config.dir.path";
+    public static final String DEPLOYMENT_CONFIG_FILE_PATH = "deployment.config.file.path";
 
     public static void main(String args[]) {
         new Bootstrap().loadClass(args);
@@ -53,6 +58,7 @@ public class Bootstrap {
 
     protected final void loadClass(String args[]) {
         try {
+            handleConfiguration();
             addSystemProperties();
             addClassPathEntries();
             ClassLoader cl = new URLClassLoader(classpath.toArray(new URL[classpath.size()]));
@@ -73,6 +79,28 @@ public class Bootstrap {
             System.exit(1);
         }
 
+    }
+
+    /**
+     * Perform the config mapping before starting the server. This will make sure all the configurations in the
+     * deployment.toml is applied.
+     */
+    private static void handleConfiguration() {
+
+        String resourcesDir = System.getProperty(CARBON_NEW_CONFIG_DIR_PATH);
+        String configFilePath = System.getProperty(DEPLOYMENT_CONFIG_FILE_PATH);
+        if (configFilePath == null || configFilePath.length() == 0) {
+            configFilePath = System.getProperty(CONF_DIRECTORY_PATH) + File.separator +
+                    ConfigParser.UX_FILE_PATH;
+        }
+
+        String outputDir = System.getProperty(CARBON_HOME);
+        try {
+            ConfigParser.parse(configFilePath, resourcesDir, outputDir);
+        } catch (ConfigParserException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     private void addSystemProperties(){

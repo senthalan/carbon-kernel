@@ -17,16 +17,16 @@
  */
 package org.wso2.carbon.server;
 
-import org.apache.commons.lang3.StringUtils;
-import org.wso2.carbon.server.extensions.*;
+import org.wso2.carbon.server.extensions.DefaultBundleCreator;
+import org.wso2.carbon.server.extensions.DropinsBundleDeployer;
+import org.wso2.carbon.server.extensions.EclipseIniRewriter;
+import org.wso2.carbon.server.extensions.LibraryFragmentBundleCreator;
+import org.wso2.carbon.server.extensions.PatchInstaller;
+import org.wso2.carbon.server.extensions.SystemBundleExtensionCreator;
 import org.wso2.carbon.server.util.Utils;
-import org.apache.log4j.Logger;
-import org.wso2.config.mapper.ConfigParser;
-import org.wso2.config.mapper.ConfigParserException;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -100,7 +100,6 @@ public class Main {
         if (System.getProperty(LauncherConstants.PROFILE) == null) {
             System.setProperty(LauncherConstants.PROFILE, LauncherConstants.DEFAULT_CARBON_PROFILE);
         }
-        handleConfiguration();
         invokeExtensions();
         launchCarbon();
     }
@@ -213,25 +212,6 @@ public class Main {
                     }
                 }
             }
-        }
-    }
-
-    private static void handleConfiguration() {
-
-        String resourcesDir = System.getProperty(LauncherConstants.CARBON_NEW_CONFIG_DIR_PATH);
-
-        String configFilePath = System.getProperty(LauncherConstants.DEPLOYMENT_CONFIG_FILE_PATH);
-        if (StringUtils.isEmpty(configFilePath)) {
-            configFilePath = System.getProperty(LauncherConstants.CARBON_CONFIG_DIR_PATH) + File.separator +
-                    ConfigParser.UX_FILE_PATH;
-        }
-
-        String outputDir = System.getProperty(LauncherConstants.CARBON_HOME);
-        try {
-            ConfigParser.parse(configFilePath, resourcesDir, outputDir);
-        } catch (ConfigParserException e) {
-            logger.log(Level.SEVERE, "Error while performing configuration changes", e);
-            System.exit(1);
         }
     }
 }

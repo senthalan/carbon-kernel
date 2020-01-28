@@ -57,6 +57,10 @@
             <version>${version.log4j}</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.config.mapper</groupId>
+            <artifactId>config-mapper</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>

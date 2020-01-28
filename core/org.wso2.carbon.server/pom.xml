@@ -39,10 +39,6 @@
             <groupId>xerces.wso2</groupId>
             <artifactId>xercesImpl</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.config.mapper</groupId>
-            <artifactId>config-mapper</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
