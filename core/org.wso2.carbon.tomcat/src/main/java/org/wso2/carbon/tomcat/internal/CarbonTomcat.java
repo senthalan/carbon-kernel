@@ -300,7 +300,12 @@ public class CarbonTomcat extends Tomcat implements CarbonTomcatService {
             if (host == null) {
                 host = this.getHost();
             }
+            long startTime = System.currentTimeMillis();
+            log.info("#### Adding as child to the CarbonTomcatService | ");
             host.addChild(ctx);
+            long endTime = System.currentTimeMillis();
+            log.info("#### Added as child to the CarbonTomcatService | " + " | " + (endTime - startTime));
+
             if (ctx.getState().equals(LifecycleState.STOPPED)) {
                 ctx.setRealm(null);
                 ctx.destroy();
